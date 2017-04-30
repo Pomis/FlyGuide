@@ -1,10 +1,12 @@
 package com.clintonmedbery.rajawalibasicproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import org.rajawali3d.Object3D;
 import org.rajawali3d.lights.DirectionalLight;
 import org.rajawali3d.materials.Material;
 import org.rajawali3d.materials.MaterialManager;
@@ -16,12 +18,13 @@ import org.rajawali3d.materials.textures.Texture;
 import org.rajawali3d.math.vector.Vector3;
 import org.rajawali3d.primitives.Plane;
 import org.rajawali3d.renderer.RajawaliRenderer;
+import org.rajawali3d.util.ObjectColorPicker;
+import org.rajawali3d.util.OnObjectPickedListener;
 
-/**
- * Created by clintonmedbery on 4/6/15.
- */
-public class Renderer extends RajawaliRenderer {
 
+public class Renderer extends RajawaliRenderer implements OnObjectPickedListener {
+
+    ObjectColorPicker mPicker;
     public Context context;
 
     private DirectionalLight directionalLight;
@@ -38,6 +41,9 @@ public class Renderer extends RajawaliRenderer {
     }
 
     public void initScene() {
+        mPicker = new ObjectColorPicker(this);
+        mPicker.setOnObjectPickedListener(this);
+
         directionalLight = new DirectionalLight(1f, .2f, -1.0f);
         directionalLight.setColor(1.0f, 1.0f, 1.0f);
         directionalLight.setPower(4);
@@ -63,16 +69,16 @@ public class Renderer extends RajawaliRenderer {
         }
         initMarkerTexture();
         plane = new Plane(60, 40, 1, 1);
-        new Marker(.3f, 4.4f, .1f);
-        new Marker(.5f, 2.4f, .1f);
-        new Marker(1.3f, 8.4f, .1f);
+        new Marker(.3f, 4.4f, .1f, false);
+        new Marker(.5f, 2.4f, .1f, false);
+        new Marker(1.3f, 8.4f, .1f, false);
+        new Marker(0, 0, 0, true);
         plane.setMaterial(material);
         getCurrentScene().addChild(plane);
         getCurrentCamera().setZ(.6f);
         getCurrentCamera().rotate(Vector3.Axis.X, 280.0);
         plane.rotate(Vector3.Axis.Y, 180.0);
 //        plane.rotate();
-
 
     }
 
@@ -110,8 +116,7 @@ public class Renderer extends RajawaliRenderer {
 
 
     public void onTouchEvent(MotionEvent event) {
-
-
+        System.out.println("OnTouchEvent");
     }
 
     public void pleaseStop() {
@@ -123,10 +128,24 @@ public class Renderer extends RajawaliRenderer {
 
     }
 
+    @Override
+    public void onObjectPicked(Object3D object) {
+
+        if (object.getName().startsWith("marker") && !object.getName().equals("marker" + (i - 1))) {
+            getContext().startActivity(new Intent(getContext(), SightActivity.class));
+        }
+    }
+
+    public void getObjectAt(float x, float y) {
+        mPicker.getObjectAt(x, y);
+    }
+
+    int i = 0;
+
     class Marker {
         public Plane plane;
 
-        Marker(float mx, float my, float mz) {
+        Marker(float mx, float my, float mz, boolean empty) {
             plane = new Plane(.2f, .2f, 1, 1);
             plane.setX(mx);
             plane.setY(my);
@@ -136,9 +155,12 @@ public class Renderer extends RajawaliRenderer {
             plane.setMaterial(material2);
 //            plane.setMaterial(new Material());
             plane.setDoubleSided(true);
+            plane.setName("marker" + i++);
+            if (empty) {
+                plane.setVisible(false);
+            }
             getCurrentScene().addChild(plane);
-
-
+            mPicker.registerObject(plane);
         }
     }
 }

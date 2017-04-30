@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,9 +25,9 @@ import android.widget.TextView;
 import org.rajawali3d.surface.IRajawaliSurface;
 import org.rajawali3d.surface.RajawaliSurfaceView;
 
-public class DrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
 
+public class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnTouchListener {
+    Renderer renderer;
     NavigationView navigationView;
 
     @Override
@@ -68,15 +69,16 @@ public class DrawerActivity extends AppCompatActivity
         surface.setRenderMode(IRajawaliSurface.RENDERMODE_WHEN_DIRTY);
 
 
-        final Renderer renderer = new Renderer(this);
+        renderer = new Renderer(this);
         surface.setSurfaceRenderer(renderer);
+        surface.setOnTouchListener(this);
 
-        surface.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), SightActivity.class));
-            }
-        });
+//        surface.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(getApplicationContext(), SightActivity.class));
+//            }
+//        });
     }
 
     @Override
@@ -160,5 +162,14 @@ public class DrawerActivity extends AppCompatActivity
                 }
             }
         }).start();
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN)
+        {
+            renderer.getObjectAt(event.getX(), event.getY());
+        }
+        return super.onTouchEvent(event);
     }
 }
