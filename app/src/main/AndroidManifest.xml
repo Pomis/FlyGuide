@@ -29,6 +29,17 @@
 
 
         </activity>
+        <activity
+            android:name=".NatureActivity"
+            android:label="@string/title_activity_sight"
+            android:parentActivityName=".DrawerActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.clintonmedbery.rajawalibasicproject.DrawerActivity" />
+
+
+        </activity>
     </application>
 
 </manifest>

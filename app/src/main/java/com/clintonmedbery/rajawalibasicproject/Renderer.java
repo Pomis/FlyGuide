@@ -66,13 +66,12 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 //        }
         getCurrentScene().setBackgroundColor(0xd4dded);
         getCurrentScene().addLight(directionalLight);
-
-        getCurrentScene().setFog(new FogMaterialPlugin.FogParams(FogMaterialPlugin.FogType.LINEAR, 0xd4dded, 1f, 16f));
+        getCurrentScene().setFog(new FogMaterialPlugin.FogParams(FogMaterialPlugin.FogType.LINEAR, 0xd4dded, 1f, 12f));
         Material material = new Material();
         material.enableLighting(true);
         material.setDiffuseMethod(new DiffuseMethod.Lambert());
         material.setColor(0);
-        Texture earthTexture = new Texture("Earth", R.drawable.earthtruecolor_nasa_big);
+        Texture earthTexture = new Texture("Earth", R.drawable.mapa);
         try {
             material.addTexture(earthTexture);
 
@@ -80,20 +79,29 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
             Log.d("DEBUG", "TEXTURE ERROR");
         }
         initMarkerTexture();
-        plane = new Plane(60, 40, 1, 1);
+        plane = new Plane(20, 15, 1, 1);
+        plane.setY(6);
 
         Texture city = new Texture("Marker", R.drawable.city);
         Texture nature = new Texture("Marker", R.drawable.nature);
         Texture water = new Texture("Marker", R.drawable.water);
 
-        new Marker(.3f, 4.4f, .1f, false, materialCity);
-        new Marker(.5f, 2.4f, .1f, false, materialNature);
-        new Marker(1.3f, 8.4f, .1f, false, materialWater);
+        new Marker(.5f, 2.4f, .15f, false, materialNature);
+        new Marker(.9f, 4.7f, .15f, false, materialNature);
+        new Marker(-.59f, 4.2f, .15f, false, materialNature);
+        new Marker(.8f, 2.4f, .15f, false, materialNature);
+        new Marker(-.3f, 8.4f, .15f, false, materialCity);
+        new Marker(-1.7f, 7.1f, .15f, false, materialCity);
+        new Marker(1.1f, 7.5f, .15f, false, materialCity);
+        new Marker(1.3f, 11.4f, .15f, false, materialWater);
+        new Marker(-1.3f, 1.4f, .15f, false, materialWater);
+        new Marker(-2.4f, 10.4f, .15f, false, materialWater);
+        new Marker(3.5f, 13.4f, .15f, false, materialWater);
         new Marker(0, 0, 0, true, materialWater);
 
         plane.setMaterial(material);
         getCurrentScene().addChild(plane);
-        getCurrentCamera().setZ(.6f);
+        getCurrentCamera().setZ(.8f);
         getCurrentCamera().rotate(Vector3.Axis.X, 280.0);
         plane.rotate(Vector3.Axis.Y, 180.0);
 //        plane.rotate();
@@ -121,7 +129,6 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         } catch (ATexture.TextureException e) {
             e.printStackTrace();
         }
-        materialCity.setColorInfluence(.5f);
 
         markerTexture = new Texture("Marker", R.drawable.nature);
         materialNature = new Material();
@@ -135,7 +142,6 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         } catch (ATexture.TextureException e) {
             e.printStackTrace();
         }
-        materialNature.setColorInfluence(.5f);
 
         markerTexture = new Texture("Marker", R.drawable.water);
         materialWater = new Material();
@@ -149,13 +155,12 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         } catch (ATexture.TextureException e) {
             e.printStackTrace();
         }
-        materialWater.setColorInfluence(.5f);
     }
 
     @Override
     public void onRender(final long elapsedTime, final double deltaTime) {
         super.onRender(elapsedTime, deltaTime);
-        getCurrentCamera().setY(getCurrentCamera().getY() + 0.002);
+        getCurrentCamera().setY(getCurrentCamera().getY() + 0.0025);
     }
 
 
@@ -179,7 +184,12 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
     public void onObjectPicked(Object3D object) {
 
         if (object.getName().startsWith("marker") && !object.getName().equals("marker" + (i - 1))) {
-            getContext().startActivity(new Intent(getContext(), SightActivity.class));
+            int num = Integer.valueOf(object.getName().split("marker")[1]);
+            if (num <= 2)
+                getContext().startActivity(new Intent(getContext(), NatureActivity.class));
+            else
+                getContext().startActivity(new Intent(getContext(), SightActivity.class));
+
         }
     }
 
@@ -216,7 +226,7 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         public Plane plane;
 
         Marker(float mx, float my, float mz, boolean empty, Material material) {
-            plane = new Plane(.2f, .2f, 1, 1);
+            plane = new Plane(.2f, .3f, 1, 1);
             plane.setX(mx);
             plane.setY(my);
             plane.setZ(mz);
