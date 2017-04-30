@@ -191,6 +191,7 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        //System.out.println(event.values);
         if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER) return;
         double FILTERING_FACTOR = 0;
 
@@ -200,7 +201,7 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
                 * (1.0 - FILTERING_FACTOR));
         double posx = X * .2f;
         double posy = Y * .2f;
-        getCurrentCamera().setRotation(posx, posy, 0);
+        //getCurrentCamera().setRotation(posx, posy, 0);
         double currentPosx = getCurrentCamera().getPosition().x;
         double currentPosy = getCurrentCamera().getPosition().y;
         //getCurrentCamera().setLookAt(currentPosx, currentPosy, 0);
