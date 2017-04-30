@@ -1,8 +1,13 @@
 package com.clintonmedbery.rajawalibasicproject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -22,7 +27,7 @@ import org.rajawali3d.util.ObjectColorPicker;
 import org.rajawali3d.util.OnObjectPickedListener;
 
 
-public class Renderer extends RajawaliRenderer implements OnObjectPickedListener {
+public class Renderer extends RajawaliRenderer implements OnObjectPickedListener, SensorEventListener {
 
     ObjectColorPicker mPicker;
     public Context context;
@@ -31,13 +36,20 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
     //private Sphere earthSphere;
     Plane plane;
     Material markerMaterial;
-    Material material2;
+    Material materialCity, materialNature, materialWater;
+
+    SensorManager mSensorManager;
+    Sensor mAccelerometer;
+    float X, Y;
 
 
     public Renderer(Context context) {
         super(context);
         this.context = context;
         setFrameRate(60);
+
+        SensorManager mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
 
     public void initScene() {
@@ -69,10 +81,16 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         }
         initMarkerTexture();
         plane = new Plane(60, 40, 1, 1);
-        new Marker(.3f, 4.4f, .1f, false);
-        new Marker(.5f, 2.4f, .1f, false);
-        new Marker(1.3f, 8.4f, .1f, false);
-        new Marker(0, 0, 0, true);
+
+        Texture city = new Texture("Marker", R.drawable.city);
+        Texture nature = new Texture("Marker", R.drawable.nature);
+        Texture water = new Texture("Marker", R.drawable.water);
+
+        new Marker(.3f, 4.4f, .1f, false, materialCity);
+        new Marker(.5f, 2.4f, .1f, false, materialNature);
+        new Marker(1.3f, 8.4f, .1f, false, materialWater);
+        new Marker(0, 0, 0, true, materialWater);
+
         plane.setMaterial(material);
         getCurrentScene().addChild(plane);
         getCurrentCamera().setZ(.6f);
@@ -80,6 +98,9 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         plane.rotate(Vector3.Axis.Y, 180.0);
 //        plane.rotate();
 
+        mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     void initMarkerTexture() {
@@ -87,25 +108,48 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         markerMaterial.enableLighting(true);
         markerMaterial.setDiffuseMethod(new DiffuseMethod.Lambert());
         markerMaterial.setColor(0);
-        Texture markerTexture = new Texture("Marker", R.drawable.marker);
-//        try {
-//
-//        } catch (ATexture.TextureException error) {
-//            Log.d("DEBUG", "TEXTURE ERROR");
-//        }
 
-        material2 = new Material();
+        Texture markerTexture = new Texture("Marker", R.drawable.city);
+        materialCity = new Material();
         try {
             AlphaMapTexture alphaTex = new AlphaMapTexture("camdenTown", R.drawable.mask);
             alphaTex.setInfluence(.5f);
-            material2.addTexture(alphaTex);
-            material2.setColorInfluence(0);
-            material2.addTexture(markerTexture);
+            materialCity.addTexture(alphaTex);
+            materialCity.setColorInfluence(0);
+            materialCity.addTexture(markerTexture);
 
         } catch (ATexture.TextureException e) {
             e.printStackTrace();
         }
-        material2.setColorInfluence(.5f);
+        materialCity.setColorInfluence(.5f);
+
+        markerTexture = new Texture("Marker", R.drawable.nature);
+        materialNature = new Material();
+        try {
+            AlphaMapTexture alphaTex = new AlphaMapTexture("camdenTown", R.drawable.mask);
+            alphaTex.setInfluence(.5f);
+            materialNature.addTexture(alphaTex);
+            materialNature.setColorInfluence(0);
+            materialNature.addTexture(markerTexture);
+
+        } catch (ATexture.TextureException e) {
+            e.printStackTrace();
+        }
+        materialNature.setColorInfluence(.5f);
+
+        markerTexture = new Texture("Marker", R.drawable.water);
+        materialWater = new Material();
+        try {
+            AlphaMapTexture alphaTex = new AlphaMapTexture("camdenTown", R.drawable.mask);
+            alphaTex.setInfluence(.5f);
+            materialWater.addTexture(alphaTex);
+            materialWater.setColorInfluence(0);
+            materialWater.addTexture(markerTexture);
+
+        } catch (ATexture.TextureException e) {
+            e.printStackTrace();
+        }
+        materialWater.setColorInfluence(.5f);
     }
 
     @Override
@@ -116,7 +160,10 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
 
     public void onTouchEvent(MotionEvent event) {
-        System.out.println("OnTouchEvent");
+
+        if (event.getAction() == MotionEvent.ACTION_SCROLL) {
+            System.out.println("ACTION_MOVE");
+        }
     }
 
     public void pleaseStop() {
@@ -142,18 +189,39 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
     int i = 0;
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER) return;
+        double FILTERING_FACTOR = 0;
+
+        X = (float) (-event.values[1] * FILTERING_FACTOR + X
+                * (1.0 - FILTERING_FACTOR));
+        Y = (float) (event.values[0] * FILTERING_FACTOR + Y
+                * (1.0 - FILTERING_FACTOR));
+        double posx = X * .2f;
+        double posy = Y * .2f;
+        getCurrentCamera().setRotation(posx, posy, 0);
+        double currentPosx = getCurrentCamera().getPosition().x;
+        double currentPosy = getCurrentCamera().getPosition().y;
+        //getCurrentCamera().setLookAt(currentPosx, currentPosy, 0);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
     class Marker {
         public Plane plane;
 
-        Marker(float mx, float my, float mz, boolean empty) {
+        Marker(float mx, float my, float mz, boolean empty, Material material) {
             plane = new Plane(.2f, .2f, 1, 1);
             plane.setX(mx);
             plane.setY(my);
             plane.setZ(mz);
             plane.rotate(Vector3.Axis.Z, 180);
             plane.rotate(Vector3.Axis.X, 90);
-            plane.setMaterial(material2);
-//            plane.setMaterial(new Material());
+            plane.setMaterial(material);
             plane.setDoubleSided(true);
             plane.setName("marker" + i++);
             if (empty) {

@@ -170,6 +170,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         {
             renderer.getObjectAt(event.getX(), event.getY());
         }
+        renderer.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
 }
