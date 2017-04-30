@@ -106,7 +106,6 @@ public class Renderer extends RajawaliRenderer {
     public void onRender(final long elapsedTime, final double deltaTime) {
         super.onRender(elapsedTime, deltaTime);
         getCurrentCamera().setY(getCurrentCamera().getY() + 0.002);
-        Log.d("kek", "rendered");
     }
 
 
