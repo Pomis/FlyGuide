@@ -91,7 +91,7 @@ public class Renderer extends RajawaliRenderer {
     public void onRender(final long elapsedTime, final double deltaTime) {
         super.onRender(elapsedTime, deltaTime);
         getCurrentCamera().setY(getCurrentCamera().getY() + 0.002);
-
+        Log.d("kek", "rendered");
     }
 
 
@@ -100,8 +100,9 @@ public class Renderer extends RajawaliRenderer {
 
     }
 
-    public void stop() {
+    public void pleaseStop() {
         stopRendering();
+        getCurrentScene().clearChildren();
     }
 
     public void onOffsetsChanged(float x, float y, float z, float w, int i, int j) {

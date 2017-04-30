@@ -75,8 +75,8 @@ public class DrawerActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), SightActivity.class));
-//                renderer.stop();
-//                finish();
+                finish();
+                renderer.pleaseStop();
             }
         });
     }
