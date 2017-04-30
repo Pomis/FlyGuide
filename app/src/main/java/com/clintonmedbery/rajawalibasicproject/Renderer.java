@@ -7,9 +7,11 @@ import android.view.MotionEvent;
 
 import org.rajawali3d.lights.DirectionalLight;
 import org.rajawali3d.materials.Material;
+import org.rajawali3d.materials.MaterialManager;
 import org.rajawali3d.materials.methods.DiffuseMethod;
 import org.rajawali3d.materials.plugins.FogMaterialPlugin;
 import org.rajawali3d.materials.textures.ATexture;
+import org.rajawali3d.materials.textures.AlphaMapTexture;
 import org.rajawali3d.materials.textures.Texture;
 import org.rajawali3d.math.vector.Vector3;
 import org.rajawali3d.primitives.Plane;
@@ -26,6 +28,7 @@ public class Renderer extends RajawaliRenderer {
     //private Sphere earthSphere;
     Plane plane;
     Material markerMaterial;
+    Material material2;
 
 
     public Renderer(Context context) {
@@ -79,12 +82,24 @@ public class Renderer extends RajawaliRenderer {
         markerMaterial.setDiffuseMethod(new DiffuseMethod.Lambert());
         markerMaterial.setColor(0);
         Texture markerTexture = new Texture("Marker", R.drawable.marker);
-        try {
-            markerMaterial.addTexture(markerTexture);
+//        try {
+//
+//        } catch (ATexture.TextureException error) {
+//            Log.d("DEBUG", "TEXTURE ERROR");
+//        }
 
-        } catch (ATexture.TextureException error) {
-            Log.d("DEBUG", "TEXTURE ERROR");
+        material2 = new Material();
+        try {
+            AlphaMapTexture alphaTex = new AlphaMapTexture("camdenTown", R.drawable.mask);
+            alphaTex.setInfluence(.5f);
+            material2.addTexture(alphaTex);
+            material2.setColorInfluence(0);
+            material2.addTexture(markerTexture);
+
+        } catch (ATexture.TextureException e) {
+            e.printStackTrace();
         }
+        material2.setColorInfluence(.5f);
     }
 
     @Override
@@ -119,7 +134,9 @@ public class Renderer extends RajawaliRenderer {
             plane.setZ(mz);
             plane.rotate(Vector3.Axis.Z, 180);
             plane.rotate(Vector3.Axis.X, 90);
-            plane.setMaterial(markerMaterial);
+            plane.setMaterial(material2);
+//            plane.setMaterial(new Material());
+            plane.setDoubleSided(true);
             getCurrentScene().addChild(plane);
 
 
