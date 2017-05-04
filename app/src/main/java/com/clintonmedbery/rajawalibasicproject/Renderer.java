@@ -176,7 +176,7 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
             Quaternion x = new Quaternion(yAxis, -xDistance / 10);
             Quaternion y = new Quaternion(xAxis, yDistance / 10);
             getCurrentCamera().rotate(x);
-            //getCurrentCamera().rotate(y);
+            getCurrentCamera().rotate(y);
 
             scroll = false;
         }

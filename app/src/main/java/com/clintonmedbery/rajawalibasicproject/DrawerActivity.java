@@ -4,11 +4,15 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.GestureDetector;
@@ -23,6 +27,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,12 +36,15 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.rajawali3d.surface.IRajawaliSurface;
 import org.rajawali3d.surface.RajawaliSurfaceView;
@@ -50,6 +59,8 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
     GestureDetector scrollDetector;
     private GoogleMap mMap;
     RajawaliSurfaceView surface;
+    Marker plane;
+    Polyline polyline;
 
 
     @Override
@@ -213,16 +224,19 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
         return true;
     }
 
+    boolean wasPaused = false;
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng latLng1 = new LatLng(46.9767, 6.80);
-        LatLng latLng2 = new LatLng(46.95, 6.70);
+        LatLng latLng1 = new LatLng(47.05, 6.80);
+        LatLng latLng2 = new LatLng(46.80, 6.70);
         LatLng latLng3 = new LatLng(46.93, 6.90);
-        LatLng latLng4 = new LatLng(46.99, 6.60);
-        LatLng latLng5 = new LatLng(46.92, 6.65);
-        LatLng latLng6 = new LatLng(46.954, 7);
+        LatLng latLng4 = new LatLng(47.03, 6.60);
+        LatLng latLng5 = new LatLng(46.89, 6.65);
+        LatLng latLng6 = new LatLng(46.974, 7);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng1, 10));
 
         Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.city)).getBitmap();
@@ -237,7 +251,7 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
         MarkerOptions[] markers = new MarkerOptions[] {
                 new MarkerOptions().position(latLng1).title("nature").icon(BitmapDescriptorFactory.fromBitmap(natureMarker)),
                 new MarkerOptions().position(latLng2).title("nature").icon(BitmapDescriptorFactory.fromBitmap(natureMarker)),
-                new MarkerOptions().position(latLng3).title("water").icon(BitmapDescriptorFactory.fromBitmap(waterMarker)),
+                //new MarkerOptions().position(latLng3).title("water").icon(BitmapDescriptorFactory.fromBitmap(waterMarker)),
                 new MarkerOptions().position(latLng6).title("water").icon(BitmapDescriptorFactory.fromBitmap(waterMarker)),
                 new MarkerOptions().position(latLng4).title("city").icon(BitmapDescriptorFactory.fromBitmap(cityMarker)),
                 new MarkerOptions().position(latLng5).title("city").icon(BitmapDescriptorFactory.fromBitmap(cityMarker)),
@@ -246,8 +260,92 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
         for (MarkerOptions m : markers) {
             mMap.addMarker(m);
         }
-
         mMap.setOnMarkerClickListener(this);
+
+        LatLng CDG = new LatLng(49.0097, 2.5477);
+        LatLng TSF = new LatLng(45.6484, 12.1944);
+
+        PolylineOptions way = new PolylineOptions()
+                .add(CDG)
+                .add(new LatLng(47.06, 6.40))
+                .add(new LatLng(46.93, 7.10))
+                .add(TSF);
+        polyline = mMap.addPolyline(way);
+        polyline.setColor(R.color.primaryColor);
+
+        bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.plane)).getBitmap();
+        Bitmap plane_bitmap = Bitmap.createScaledBitmap(bitmap, 152, 144, false);
+        plane_bitmap = rotateBitmap(plane_bitmap, 15);
+
+        if (!wasPaused) {
+            plane = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(47.01, 6.50))
+                    .title("plane")
+                    .icon(BitmapDescriptorFactory.fromBitmap(plane_bitmap)));
+        }
+
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+//                for (double y = polyline.getPoints().get(0).longitude; y < polyline.getPoints().get(1).longitude; y += 0.001) {
+//                    double x = -(2.0330000000000013 * y - 213.58342141000003) / 4.2523;
+//
+//                    //plane.setPosition(new LatLng(x, y));
+//                }
+
+                if (!wasPaused) {
+                    wasPaused = true;
+                    animateMarker(plane, new LatLng(46.88, 7.20), false);
+                }
+            }
+        });
+    }
+
+    public void animateMarker(final Marker marker, final LatLng toPosition,
+                              final boolean hideMarker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = mMap.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 50000;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        //marker.setRotation(angleDeg);
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * toPosition.longitude + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t)
+                        * startLatLng.latitude;
+
+                marker.setPosition(new LatLng(lat, lng));
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
+    }
+
+    public static Bitmap rotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
     @Override
