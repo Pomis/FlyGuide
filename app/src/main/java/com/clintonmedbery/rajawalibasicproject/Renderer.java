@@ -20,6 +20,7 @@ import org.rajawali3d.materials.plugins.FogMaterialPlugin;
 import org.rajawali3d.materials.textures.ATexture;
 import org.rajawali3d.materials.textures.AlphaMapTexture;
 import org.rajawali3d.materials.textures.Texture;
+import org.rajawali3d.math.Quaternion;
 import org.rajawali3d.math.vector.Vector3;
 import org.rajawali3d.primitives.Plane;
 import org.rajawali3d.renderer.RajawaliRenderer;
@@ -29,26 +30,32 @@ import org.rajawali3d.util.OnObjectPickedListener;
 
 public class Renderer extends RajawaliRenderer implements OnObjectPickedListener, SensorEventListener {
 
-    ObjectColorPicker mPicker;
-    public Context context;
+    private ObjectColorPicker mPicker;
+    private Context context;
 
     private DirectionalLight directionalLight;
     //private Sphere earthSphere;
-    Plane plane;
-    Material markerMaterial;
-    Material materialCity, materialNature, materialWater;
+    private Plane plane;
+    private Material markerMaterial;
+    private Material materialCity, materialNature, materialWater;
+
+    float xDistance, yDistance;
+    boolean scroll = false;
+
+    Vector3 xAxis;
+    Vector3 yAxis;
+    Vector3 zAxis;
 
     SensorManager mSensorManager;
     Sensor mAccelerometer;
-    float X, Y;
 
 
-    public Renderer(Context context) {
+    Renderer(Context context) {
         super(context);
         this.context = context;
         setFrameRate(60);
 
-        SensorManager mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
 
@@ -59,18 +66,21 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         directionalLight = new DirectionalLight(1f, .2f, -1.0f);
         directionalLight.setColor(1.0f, 1.0f, 1.0f);
         directionalLight.setPower(4);
-//        try {
-//            getCurrentScene().setSkybox(R.drawable.earthtruecolor_nasa_big);
-//        } catch (ATexture.TextureException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            getCurrentScene().setSkybox(R.drawable.skybox);
+
+        } catch (ATexture.TextureException e) {
+            e.printStackTrace();
+        }
         getCurrentScene().setBackgroundColor(0xd4dded);
         getCurrentScene().addLight(directionalLight);
         getCurrentScene().setFog(new FogMaterialPlugin.FogParams(FogMaterialPlugin.FogType.LINEAR, 0xd4dded, 1f, 12f));
+
         Material material = new Material();
         material.enableLighting(true);
         material.setDiffuseMethod(new DiffuseMethod.Lambert());
         material.setColor(0);
+
         Texture earthTexture = new Texture("Earth", R.drawable.mapa);
         try {
             material.addTexture(earthTexture);
@@ -78,13 +88,10 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         } catch (ATexture.TextureException error) {
             Log.d("DEBUG", "TEXTURE ERROR");
         }
+
         initMarkerTexture();
         plane = new Plane(20, 15, 1, 1);
         plane.setY(6);
-
-        Texture city = new Texture("Marker", R.drawable.city);
-        Texture nature = new Texture("Marker", R.drawable.nature);
-        Texture water = new Texture("Marker", R.drawable.water);
 
         new Marker(.5f, 2.4f, .15f, false, materialNature);
         new Marker(.9f, 4.7f, .15f, false, materialNature);
@@ -104,14 +111,15 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         getCurrentCamera().setZ(.8f);
         getCurrentCamera().rotate(Vector3.Axis.X, 280.0);
         plane.rotate(Vector3.Axis.Y, 180.0);
-//        plane.rotate();
 
-        mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        xAxis = getCurrentCamera().getOrientation().getXAxis();
+        yAxis = getCurrentCamera().getOrientation().getYAxis();
+        zAxis = getCurrentCamera().getOrientation().getZAxis();
 
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
-    void initMarkerTexture() {
+    private void initMarkerTexture() {
         markerMaterial = new Material();
         markerMaterial.enableLighting(true);
         markerMaterial.setDiffuseMethod(new DiffuseMethod.Lambert());
@@ -159,25 +167,34 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
     @Override
     public void onRender(final long elapsedTime, final double deltaTime) {
-        super.onRender(elapsedTime, deltaTime);
         getCurrentCamera().setY(getCurrentCamera().getY() + 0.0025);
+        //plane.setY(plane.getY() - 0.0025);
+
+        if(scroll) {
+
+            //Method to rotate the 3D model
+            Quaternion x = new Quaternion(yAxis, -xDistance / 10);
+            Quaternion y = new Quaternion(xAxis, yDistance / 10);
+            getCurrentCamera().rotate(x);
+            //getCurrentCamera().rotate(y);
+
+            scroll = false;
+        }
+
+        super.onRender(elapsedTime, deltaTime);
     }
 
 
     public void onTouchEvent(MotionEvent event) {
 
-        if (event.getAction() == MotionEvent.ACTION_SCROLL) {
-            System.out.println("ACTION_MOVE");
-        }
-    }
-
-    public void pleaseStop() {
-        stopRendering();
-        getCurrentScene().clearChildren();
     }
 
     public void onOffsetsChanged(float x, float y, float z, float w, int i, int j) {
 
+    }
+
+    public void getObjectAt(float x, float y) {
+        mPicker.getObjectAt(x, y);
     }
 
     @Override
@@ -193,28 +210,38 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         }
     }
 
-    public void getObjectAt(float x, float y) {
-        mPicker.getObjectAt(x, y);
-    }
+    private int i = 0;
 
-    int i = 0;
+    float X, Y, xdist, ydist;
+    boolean init = false;
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        //System.out.println(event.values);
         if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER) return;
-        double FILTERING_FACTOR = 0;
 
-        X = (float) (-event.values[1] * FILTERING_FACTOR + X
-                * (1.0 - FILTERING_FACTOR));
-        Y = (float) (event.values[0] * FILTERING_FACTOR + Y
-                * (1.0 - FILTERING_FACTOR));
-        double posx = X * .2f;
-        double posy = Y * .2f;
-        //getCurrentCamera().setRotation(posx, posy, 0);
-        double currentPosx = getCurrentCamera().getPosition().x;
-        double currentPosy = getCurrentCamera().getPosition().y;
-        //getCurrentCamera().setLookAt(currentPosx, currentPosy, 0);
+        if (X == event.values[0] || Y == event.values[2]) return;
+
+        if (!init) {
+            X = event.values[0];
+            Y = event.values[0];
+            //init = true;
+            return;
+        }
+
+        xdist = X - event.values[0];
+        ydist = Y - event.values[2];
+
+        X = event.values[0];
+        Y = event.values[0];
+
+        System.out.println(xdist + "; " + ydist);
+
+        //Method to rotate the 3D model
+        Quaternion x = new Quaternion(yAxis, xdist / 5);
+        Quaternion y = new Quaternion(xAxis, -ydist / 5);
+        //plane.rotate(x.multiply(y));
+        getCurrentCamera().rotate(x);
+        getCurrentCamera().rotate(y);
     }
 
     @Override
@@ -222,8 +249,8 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
     }
 
-    class Marker {
-        public Plane plane;
+    private class Marker {
+        Plane plane;
 
         Marker(float mx, float my, float mz, boolean empty, Material material) {
             plane = new Plane(.2f, .3f, 1, 1);
