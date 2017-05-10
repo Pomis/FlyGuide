@@ -166,17 +166,17 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_mys7) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_buy) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_best) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_reg) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_table) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_tickets) {
 
         }
 
@@ -186,8 +186,8 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
     }
 
 
-    int kmFrom = 1504;
-    int kmTo = 1300;
+    int kmFrom = 2875;
+    int kmTo = 565;
     void updateAgo() {
         new Thread(new Runnable() {
             @Override
@@ -199,8 +199,8 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
                         public void run() {
                             kmFrom++;
                             kmTo--;
-                            ((TextView)findViewById(R.id.tv_from)).setText(kmFrom+"km\n1:23 AGO");
-                            ((TextView)findViewById(R.id.tv_to)).setText(kmTo+"km\n01:12 AGO");
+                            ((TextView)findViewById(R.id.tv_from)).setText(kmFrom+"km\n04:03 AGO");
+                            ((TextView)findViewById(R.id.tv_to)).setText(kmTo+"km\n00:51 AGO");
                             updateAgo();
                         }
                     });

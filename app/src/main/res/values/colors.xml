@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="fogColor">#d4dded</color>
-    <color name="primaryColor">#271878</color>
+    <color name="primaryColor">#bbd84b</color>
+    <color name="textColor">#575945</color>
+    <color name="navBackgroundColor">#54565b</color>
+    <color name="navTextColor">#F5F7FC</color>
 </resources>

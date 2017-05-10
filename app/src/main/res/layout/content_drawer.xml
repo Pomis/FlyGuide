@@ -37,6 +37,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:scaleType="fitXY"
+            android:tint="@color/textColor"
             android:src="@drawable/ic_action_name" />
 
 
@@ -47,8 +48,8 @@
             android:layout_margin="8dp"
             android:layout_toRightOf="@id/iv_hamburger"
             android:gravity="center"
-            android:text="Paris(CDG) — Treviso(TSF)"
-            android:textColor="#fff"
+            android:text="Mardid(MAD) - Moscow(DME)"
+            android:textColor="@color/textColor"
             android:textSize="20dp" />
 
         <LinearLayout
@@ -59,7 +60,6 @@
             android:layout_margin="8dp"
             android:layout_toRightOf="@id/iv_hamburger">
 
-
             <TextView
                 android:id="@+id/tv_from"
                 android:layout_weight="1.5"
@@ -67,8 +67,8 @@
                 android:layout_marginEnd="10dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="1504km\n01:23 AGO"
-                android:textColor="#fff"
+                android:text="2875km\n04:03 AGO"
+                android:textColor="@color/textColor"
                 android:textSize="11dp" />
 
             <ImageView
@@ -83,9 +83,10 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
-                android:text="1300km\n01:11 AGO"
-                android:textColor="#fff"
+                android:text="565km\n00:51 AGO"
+                android:textColor="@color/textColor"
                 android:textSize="11dp" />
+
         </LinearLayout>
 
     </RelativeLayout>

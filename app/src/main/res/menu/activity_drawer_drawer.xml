@@ -3,34 +3,47 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Photos" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Plane" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Booking" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_camera"
-            android:checked="true"
-            android:title="Camera" />
+            android:id="@+id/nav_mys7"
+            android:icon="@drawable/ic_home_black_24px"
+            android:title="Мои бронирования | MyS7" />
+
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Сервисы">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_buy"
+                android:icon="@drawable/ic_airplanemode_active_black_24px"
+                android:title="Купить или забронировать" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_best"
+                android:icon="@drawable/ic_turned_in_black_24px"
+                android:title="Лучшие предложения" />
+            <item
+                android:id="@+id/nav_reg"
+                android:icon="@drawable/ic_flight_takeoff_black_24px"
+                android:title="Регистрация на рейс" />
+            <item
+                android:id="@+id/nav_table"
+                android:icon="@drawable/ic_event_note_black_24px"
+                android:title="Табло рейсов" />
+            <item
+                android:id="@+id/nav_tickets"
+                android:icon="@drawable/ic_layers_black_24px"
+                android:title="Посадочные талоны" />
+            <item
+                android:id="@+id/nav_flyguide"
+                android:icon="@drawable/ic_location_on_black_24px"
+                android:title="FLYGUIDE" />
+        </menu>
+    </item>
+
+    <item android:title="S7 Priority">
+        <menu>
+            <item
+                android:id="@+id/nav_about"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Feedback" />
+                android:title="О программе" />
         </menu>
     </item>
 
