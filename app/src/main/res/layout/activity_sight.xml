@@ -83,7 +83,7 @@
 
                 android:textColor="#000"
                 android:layout_margin="16dp"
-                android:text="Flora and fauna"
+                android:text="Popular sights"
                 android:textSize="20sp" />
 
             <com.yarolegovich.discretescrollview.DiscreteScrollView
