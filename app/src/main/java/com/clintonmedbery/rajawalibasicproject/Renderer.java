@@ -8,8 +8,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 
 import org.rajawali3d.Object3D;
 import org.rajawali3d.lights.DirectionalLight;
@@ -101,10 +104,10 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         new Marker(-1.7f, 7.1f, .15f, false, materialCity);
         new Marker(1.1f, 7.5f, .15f, false, materialCity);
         new Marker(1.3f, 11.4f, .15f, false, materialWater);
-        new Marker(-1.3f, 1.4f, .15f, false, materialWater);
-        new Marker(-2.4f, 10.4f, .15f, false, materialWater);
-        new Marker(3.5f, 13.4f, .15f, false, materialWater);
-        new Marker(0, 0, 0, true, materialWater);
+        //new Marker(-1.3f, 1.4f, .15f, false, materialWater);
+        //new Marker(-2.4f, 10.4f, .15f, false, materialWater);
+        //new Marker(3.5f, 13.4f, .15f, false, materialWater);
+        //new Marker(0, 0, 0, true, materialWater);
 
         plane.setMaterial(material);
         getCurrentScene().addChild(plane);
@@ -202,7 +205,16 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
         if (object.getName().startsWith("marker") && !object.getName().equals("marker" + (i - 1))) {
             int num = Integer.valueOf(object.getName().split("marker")[1]);
-            if (num <= 2)
+            System.out.println(num + "  saFsafdaSZFDaSZDxsZdxzsZxzxzxzcxzxzcxsz");
+            if (num == 7) {
+                System.out.println(num);
+                Intent intent = new Intent(getContext(), PanoramaActivity.class);
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("ludvigcastle.jpg"));
+                intent.putExtra("inputType", VrPanoramaView.Options.TYPE_STEREO_OVER_UNDER);
+                getContext().startActivity(intent);
+            }
+            else if (num <= 2)
                 getContext().startActivity(new Intent(getContext(), NatureActivity.class));
             else
                 getContext().startActivity(new Intent(getContext(), SightActivity.class));
