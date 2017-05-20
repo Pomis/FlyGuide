@@ -205,19 +205,17 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
         if (object.getName().startsWith("marker") && !object.getName().equals("marker" + (i - 1))) {
             int num = Integer.valueOf(object.getName().split("marker")[1]);
-            System.out.println(num + "  saFsafdaSZFDaSZDxsZdxzsZxzxzxzcxzxzcxsz");
-            if (num == 7) {
-                System.out.println(num);
-                Intent intent = new Intent(getContext(), PanoramaActivity.class);
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("ludvigcastle.jpg"));
-                intent.putExtra("inputType", VrPanoramaView.Options.TYPE_STEREO_OVER_UNDER);
-                getContext().startActivity(intent);
-            }
-            else if (num <= 2)
-                getContext().startActivity(new Intent(getContext(), NatureActivity.class));
-            else
-                getContext().startActivity(new Intent(getContext(), SightActivity.class));
+
+            Intent intent = new Intent(getContext(), PanoramaActivity.class);
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("ludvigcastle.jpg"));
+            intent.putExtra("inputType", VrPanoramaView.Options.TYPE_STEREO_OVER_UNDER);
+            getContext().startActivity(intent);
+
+//            if (num <= 2)
+//                getContext().startActivity(new Intent(getContext(), NatureActivity.class));
+//            else
+//                getContext().startActivity(new Intent(getContext(), SightActivity.class));
 
         }
     }

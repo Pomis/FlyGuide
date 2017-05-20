@@ -142,7 +142,7 @@ public class PanoramaActivity extends AppCompatActivity {
         protected Boolean doInBackground(Pair<Uri, Options>... fileInformation) {
             Options panoOptions;
             InputStream istr;
-            
+
             if (fileInformation == null || fileInformation.length < 1
                     || fileInformation[0] == null || fileInformation[0].first == null) {
                 AssetManager assetManager = getAssets();
@@ -155,8 +155,10 @@ public class PanoramaActivity extends AppCompatActivity {
                     return false;
                 }
             } else {
+                AssetManager assetManager = getAssets();
                 try {
-                    istr = new FileInputStream(new File(fileInformation[0].first.getPath()));
+                    //istr = new FileInputStream(new File(fileInformation[0].first.getPath()));
+                    istr = assetManager.open(fileInformation[0].first.toString());
                     panoOptions = fileInformation[0].second;
                 } catch (IOException e) {
                     Log.e(TAG, "Could not load file: " + e);
