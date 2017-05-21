@@ -22,19 +22,15 @@ android {
     }
 }
 
-allprojects {
-    repositories {
-        // For GVR components, the official source of the .aars is JCenter.
-        jcenter()
-    }
-}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'org.rajawali3d:rajawali:1.0.186-SNAPSHOT@aar'
+    //compile 'org.rajawali3d:rajawali:1.0.186-SNAPSHOT@aar'
+    compile 'com.android.support:appcompat-v7:25.0.2'
+    compile 'org.rajawali3d:rajawali:1.1.777@aar'
+    compile 'org.rajawali3d:vr:1.1.777@aar'
+    compile 'org.rajawali3d:vuforia:1.1.777@aar'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.sothree.slidinguppanel:library:3.3.1'

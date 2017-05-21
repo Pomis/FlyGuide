@@ -57,11 +57,9 @@
                 android:value="com.clintonmedbery.rajawalibasicproject.DrawerActivity" />
         </activity>
         <activity
-            android:name=".FlightVRActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppTheme.Fullscreen">
-
-        </activity>
+            android:name=".VirtualActivity"
+            android:label="@string/title_activity_vr"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

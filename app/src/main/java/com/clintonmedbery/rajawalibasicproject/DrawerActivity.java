@@ -46,19 +46,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.rajawali3d.surface.IRajawaliSurface;
-import org.rajawali3d.surface.RajawaliSurfaceView;
-
 
 public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
-        NavigationView.OnNavigationItemSelectedListener, View.OnTouchListener, OnMapReadyCallback {
+        NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
-    Renderer renderer;
     NavigationView navigationView;
-    ScrollListener scrollListener;
-    GestureDetector scrollDetector;
     private GoogleMap mMap;
-    RajawaliSurfaceView surface;
     Marker plane;
     Polyline polyline;
 
@@ -70,7 +63,6 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        initRenderer();
         initHamburger();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -80,9 +72,6 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
         }
 
         updateAgo();
-
-        scrollListener = new ScrollListener();
-        scrollDetector = new GestureDetector(this, scrollListener);
 
         findViewById(R.id.map).setVisibility(View.GONE);
 
@@ -101,7 +90,8 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
 //                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
 //                        .findFragmentById(R.id.map);
 //                mapFragment.getMapAsync(DrawerActivity.this);
-                startActivity(new Intent(getApplicationContext(), FlightVRActivity.class));
+
+                startActivity(new Intent(getApplicationContext(), VirtualActivity.class));
             }
         });
     }
@@ -117,16 +107,6 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
 
             }
         });
-    }
-
-    private void initRenderer() {
-        surface = (RajawaliSurfaceView) findViewById(R.id.rjv_renderer);
-        surface.setFrameRate(60.0);
-        surface.setRenderMode(IRajawaliSurface.RENDERMODE_WHEN_DIRTY);
-
-        renderer = new Renderer(this);
-        surface.setSurfaceRenderer(renderer);
-        surface.setOnTouchListener(this);
     }
 
     @Override
@@ -210,19 +190,6 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
                 }
             }
         }).start();
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        scrollDetector.onTouchEvent(event);
-
-        if(event.getAction() == MotionEvent.ACTION_DOWN)
-        {
-            renderer.getObjectAt(event.getX(), event.getY());
-            renderer.onTouchEvent(event);
-        }
-
-        return true;
     }
 
     boolean wasPaused = false;
@@ -358,18 +325,5 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
         }
 
         return false;
-    }
-
-    public class ScrollListener extends
-            GestureDetector.SimpleOnGestureListener {
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            renderer.xDistance = distanceX;
-            renderer.yDistance = distanceY;
-            renderer.scroll = true;
-            System.out.println("onScroll: distanceX = " + distanceX + "; distanceY = " + distanceY);
-            return super.onScroll(e1, e2, distanceX, distanceY);
-        }
     }
 }

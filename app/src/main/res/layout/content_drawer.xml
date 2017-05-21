@@ -10,11 +10,7 @@
     tools:context="com.clintonmedbery.rajawalibasicproject.DrawerActivity"
     tools:showIn="@layout/app_bar_drawer">
 
-    <org.rajawali3d.surface.RajawaliSurfaceView
-        android:id="@+id/rjv_renderer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true" />
+
 
     <fragment
         android:id="@+id/map"

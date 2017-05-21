@@ -25,3 +25,5 @@
 -keepclassmembers class * {
     @com.google.vr.cardboard.annotations.UsedByReflection *;
 }
+
+-keep class com.google.vrtoolkit.cardboard.** { *; }

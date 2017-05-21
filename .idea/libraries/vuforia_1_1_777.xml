@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="vuforia-1.1.777">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.android/build-cache/ac0a1dd0e16c011cea5ba68e17d86472080f9649/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/ac0a1dd0e16c011cea5ba68e17d86472080f9649/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/ac0a1dd0e16c011cea5ba68e17d86472080f9649/output/jars/libs/Vuforia.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.rajawali3d/vuforia/1.1.777/2ce6d949336cdd856a574a0b0a610388943e17ea/vuforia-1.1.777-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
