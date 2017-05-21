@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.vr.sdk.widgets.common.VrWidgetView;
 import com.google.vr.sdk.widgets.pano.VrPanoramaEventListener;
 import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 import com.google.vr.sdk.widgets.pano.VrPanoramaView.Options;
@@ -79,6 +80,11 @@ public class PanoramaActivity extends AppCompatActivity {
      */
     private void handleIntent(Intent intent) {
         // Determine if the Intent contains a file to load.
+
+        if (intent.getBooleanExtra("fullscreen", false)) {
+            panoWidgetView.setDisplayMode(VrWidgetView.DisplayMode.FULLSCREEN_STEREO);
+        }
+
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             Log.i(TAG, "ACTION_VIEW Intent received");
 

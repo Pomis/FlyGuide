@@ -1,44 +1,35 @@
 package com.clintonmedbery.rajawalibasicproject;
 
-import android.app.ActionBar;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -49,16 +40,17 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import org.rajawali3d.surface.IRajawaliSurface;
 import org.rajawali3d.surface.RajawaliSurfaceView;
 
-
-public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
+public class FlightVRActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
         NavigationView.OnNavigationItemSelectedListener, View.OnTouchListener, OnMapReadyCallback {
 
-    Renderer renderer;
+    Renderer renderer1;
+    Renderer renderer2;
     NavigationView navigationView;
     ScrollListener scrollListener;
     GestureDetector scrollDetector;
     private GoogleMap mMap;
-    RajawaliSurfaceView surface;
+    RajawaliSurfaceView surface1;
+    RajawaliSurfaceView surface2;
     Marker plane;
     Polyline polyline;
 
@@ -66,29 +58,28 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer);
-
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        setContentView(R.layout.activity_flight_vr);
+//        navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
         initRenderer();
-        initHamburger();
+        //initHamburger();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decor = getWindow().getDecorView();
-                decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         }
 
         updateAgo();
 
-        scrollListener = new ScrollListener();
+        scrollListener = new FlightVRActivity.ScrollListener();
         scrollDetector = new GestureDetector(this, scrollListener);
 
-        findViewById(R.id.map).setVisibility(View.GONE);
+//        findViewById(R.id.map).setVisibility(View.GONE);
 
-        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.floating_button);
-        myFab.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+//        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.floating_button);
+//        myFab.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
 //                if (findViewById(R.id.map).getVisibility() == View.GONE) {
 //                    ((FloatingActionButton) findViewById(R.id.floating_button)).setImageResource(R.drawable.ic_3d_rotation_white_48dp);
 //                    findViewById(R.id.map).setVisibility(View.VISIBLE);
@@ -100,44 +91,31 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
 //                // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 //                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
 //                        .findFragmentById(R.id.map);
-//                mapFragment.getMapAsync(DrawerActivity.this);
-                startActivity(new Intent(getApplicationContext(), FlightVRActivity.class));
-            }
-        });
+//                mapFragment.getMapAsync(FlightVRActivity.this);
+//            }
+//        });
     }
 
-    private void initHamburger() {
-        ImageView ham = (ImageView) findViewById(R.id.iv_hamburger);
-        ham.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-                drawer.openDrawer(GravityCompat.START);
-
-            }
-        });
-    }
 
     private void initRenderer() {
-        surface = (RajawaliSurfaceView) findViewById(R.id.rjv_renderer);
-        surface.setFrameRate(60.0);
-        surface.setRenderMode(IRajawaliSurface.RENDERMODE_WHEN_DIRTY);
+        surface1 = (RajawaliSurfaceView) findViewById(R.id.rjv_renderer1);
+        surface2 = (RajawaliSurfaceView) findViewById(R.id.rjv_renderer2);
+        surface1.setFrameRate(60.0);
+        surface2.setFrameRate(60.0);
+        surface1.setRenderMode(IRajawaliSurface.RENDERMODE_WHEN_DIRTY);
+        surface2.setRenderMode(IRajawaliSurface.RENDERMODE_WHEN_DIRTY);
 
-        renderer = new Renderer(this);
-        surface.setSurfaceRenderer(renderer);
-        surface.setOnTouchListener(this);
+        renderer2 = new Renderer(this);
+        renderer1 = new Renderer(this);
+        surface1.setSurfaceRenderer(renderer1);
+
+        surface2.setSurfaceRenderer(renderer2);
+        surface1.setOnTouchListener(this);
+        surface2.setOnTouchListener(this);
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -190,26 +168,26 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
     int kmFrom = 2875;
     int kmTo = 565;
     void updateAgo() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(500);
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            kmFrom++;
-                            kmTo--;
-                            ((TextView)findViewById(R.id.tv_from)).setText(kmFrom+"km\n04:03 AGO");
-                            ((TextView)findViewById(R.id.tv_to)).setText(kmTo+"km\n00:51 AGO");
-                            updateAgo();
-                        }
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(500);
+//                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            kmFrom++;
+//                            kmTo--;
+//                            ((TextView)findViewById(R.id.tv_from)).setText(kmFrom+"km\n04:03 AGO");
+//                            ((TextView)findViewById(R.id.tv_to)).setText(kmTo+"km\n00:51 AGO");
+//                            updateAgo();
+//                        }
+//                    });
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
     }
 
     @Override
@@ -218,8 +196,11 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
 
         if(event.getAction() == MotionEvent.ACTION_DOWN)
         {
-            renderer.getObjectAt(event.getX(), event.getY());
-            renderer.onTouchEvent(event);
+            renderer1.getObjectAt(event.getX(), event.getY());
+            renderer1.onTouchEvent(event);
+
+            renderer2.getObjectAt(event.getX(), event.getY());
+            renderer2.onTouchEvent(event);
         }
 
         return true;
@@ -365,9 +346,13 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            renderer.xDistance = distanceX;
-            renderer.yDistance = distanceY;
-            renderer.scroll = true;
+            renderer1.xDistance = distanceX;
+            renderer1.yDistance = distanceY;
+            renderer1.scroll = true;
+
+            renderer2.xDistance = distanceX;
+            renderer2.yDistance = distanceY;
+            renderer2.scroll = true;
             System.out.println("onScroll: distanceX = " + distanceX + "; distanceY = " + distanceY);
             return super.onScroll(e1, e2, distanceX, distanceY);
         }

@@ -56,6 +56,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.clintonmedbery.rajawalibasicproject.DrawerActivity" />
         </activity>
+        <activity
+            android:name=".FlightVRActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.Fullscreen">
+
+        </activity>
     </application>
 
 </manifest>

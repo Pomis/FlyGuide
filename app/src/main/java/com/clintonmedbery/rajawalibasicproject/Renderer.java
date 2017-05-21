@@ -9,9 +9,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.google.vr.sdk.base.sensors.HeadTracker;
 import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 
 import org.rajawali3d.Object3D;
@@ -51,6 +53,7 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
     SensorManager mSensorManager;
     Sensor mAccelerometer;
+    HeadTracker headTracker;
 
 
     Renderer(Context context) {
@@ -60,6 +63,9 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        headTracker = HeadTracker.createFromContext(context);
+        headTracker.startTracking();
     }
 
     public void initScene() {
@@ -184,9 +190,78 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
             scroll = false;
         }
 
+        //  хрень с акселерометром
+//        rotateCameraGyro();
+
         super.onRender(elapsedTime, deltaTime);
     }
 
+    private void rotateCameraGyro() {
+        float[] R = new float[16];
+
+
+        headTracker.getLastHeadView(R, 0);
+
+        android.opengl.Matrix.invertM(R, 0, R, 0);
+
+        float[] quanterion = new float[4];
+        getQuaternion(quanterion, 0, R);
+        Quaternion q = new Quaternion(quanterion[3],
+                quanterion[0],quanterion[1],quanterion[2]);
+        getCurrentCamera().rotate(Vector3.Axis.X, 280.0);
+        getCurrentCamera().setRotation(q);
+    }
+
+    public void getQuaternion(float[] quaternion, int offset, float[] R) {
+        if (offset + 4 > quaternion.length) {
+            throw new IllegalArgumentException(
+                    "Not enough space to write the result");
+        }
+        float[] m = R;
+        float t = m[0] + m[5] + m[10];
+        float x;
+        float y;
+        float z;
+        float w;
+        float s;
+        if (t >= 0.0F) {
+            s = (float)Math.sqrt(t + 1.0F);
+            w = 0.5F * s;
+            s = 0.5F / s;
+            x = (m[9] - m[6]) * s;
+            y = (m[2] - m[8]) * s;
+            z = (m[4] - m[1]) * s;
+        } else {
+            if ((m[0] > m[5]) && (m[0] > m[10])) {
+                s = (float)Math.sqrt(1.0F + m[0] - m[5] - m[10]);
+                x = s * 0.5F;
+                s = 0.5F / s;
+                y = (m[4] + m[1]) * s;
+                z = (m[2] + m[8]) * s;
+                w = (m[9] - m[6]) * s;
+            } else {
+                if (m[5] > m[10]) {
+                    s = (float)Math.sqrt(1.0F + m[5] - m[0] - m[10]);
+                    y = s * 0.5F;
+                    s = 0.5F / s;
+                    x = (m[4] + m[1]) * s;
+                    z = (m[9] + m[6]) * s;
+                    w = (m[2] - m[8]) * s;
+                } else {
+                    s = (float)Math.sqrt(1.0F + m[10] - m[0] - m[5]);
+                    z = s * 0.5F;
+                    s = 0.5F / s;
+                    x = (m[2] + m[8]) * s;
+                    y = (m[9] + m[6]) * s;
+                    w = (m[4] - m[1]) * s;
+                }
+            }
+        }
+        quaternion[(offset + 0)] = x;
+        quaternion[(offset + 1)] = y;
+        quaternion[(offset + 2)] = z;
+        quaternion[(offset + 3)] = w;
+    }
 
     public void onTouchEvent(MotionEvent event) {
 
@@ -206,12 +281,18 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         if (object.getName().startsWith("marker") && !object.getName().equals("marker" + (i - 1))) {
             int num = Integer.valueOf(object.getName().split("marker")[1]);
 
-            Intent intent = new Intent(getContext(), PanoramaActivity.class);
+            Intent intent =
+                    (num <= 2)?
+                            new Intent(getContext(), NatureActivity.class)
+                                .setData(Uri.parse("natura.jpg")):
+                            new Intent(getContext(), SightActivity.class);
+
+            //.putExtra("fullscreen", true);
             intent.setAction(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("ludvigcastle.jpg"));
+//            intent.setData(Uri.parse("ludvigcastle.jpg"));
             intent.putExtra("inputType", VrPanoramaView.Options.TYPE_STEREO_OVER_UNDER);
             getContext().startActivity(intent);
-
+//
 //            if (num <= 2)
 //                getContext().startActivity(new Intent(getContext(), NatureActivity.class));
 //            else

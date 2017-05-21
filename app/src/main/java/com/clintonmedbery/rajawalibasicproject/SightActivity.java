@@ -41,9 +41,9 @@ public class SightActivity extends AppCompatActivity implements DiscreteScrollVi
 
     private void initArray() {
         sights = new ArrayList<>();
-        sights.add(new Sight("Abbaye de fontaine André", "kekker", R.drawable.abbay));
-        sights.add(new Sight("Musée d‘ethnographie", "dsfsdfsd", R.drawable.lalall));
-        sights.add(new Sight("Collegiate Church", "dsfasdf", R.drawable.neuch));
+        sights.add(new Sight("Abbaye de fontaine André", "kekker", "", R.drawable.abbay));
+        sights.add(new Sight("Musée d‘ethnographie", "dsfsdfsd", "",R.drawable.lalall));
+        sights.add(new Sight("Collegiate Church", "dsfasdf","", R.drawable.neuch));
     }
 
     private void initDiscreteScroll() {
