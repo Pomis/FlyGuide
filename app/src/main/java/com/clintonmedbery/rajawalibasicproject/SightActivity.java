@@ -32,7 +32,7 @@ public class SightActivity extends AppCompatActivity implements DiscreteScrollVi
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decor = getWindow().getDecorView();
-                decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         }
         initArray();
@@ -41,9 +41,9 @@ public class SightActivity extends AppCompatActivity implements DiscreteScrollVi
 
     private void initArray() {
         sights = new ArrayList<>();
-        sights.add(new Sight("Abbaye de fontaine André", "kekker", "", R.drawable.abbay));
-        sights.add(new Sight("Musée d‘ethnographie", "dsfsdfsd", "",R.drawable.lalall));
-        sights.add(new Sight("Collegiate Church", "dsfasdf","", R.drawable.neuch));
+        sights.add(new Sight("Abbaye de fontaine André", "kekker", "", 0, R.drawable.abbay));
+        sights.add(new Sight("Musée d‘ethnographie", "dsfsdfsd", "", 0, R.drawable.lalall));
+        sights.add(new Sight("Collegiate Church", "dsfasdf", "", 0, R.drawable.neuch));
     }
 
     private void initDiscreteScroll() {

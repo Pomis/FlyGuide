@@ -4,6 +4,7 @@ package com.clintonmedbery.rajawalibasicproject;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,6 +65,7 @@ public class PanoramaActivity extends AppCompatActivity {
     private Uri fileUri;
     private Options panoOptions = new Options();
     private ImageLoaderTask backgroundImageLoaderTask;
+    MediaPlayer mediaPlayer;
 
 
     @Override
@@ -83,6 +85,12 @@ public class PanoramaActivity extends AppCompatActivity {
 
         if (intent.getBooleanExtra("fullscreen", false)) {
             panoWidgetView.setDisplayMode(VrWidgetView.DisplayMode.FULLSCREEN_STEREO);
+        }
+
+        int wavAsset = intent.getIntExtra("wav_asset", 0);
+        if (wavAsset!=0) {
+            mediaPlayer = MediaPlayer.create(this, wavAsset);
+            mediaPlayer.start();
         }
 
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
@@ -117,6 +125,7 @@ public class PanoramaActivity extends AppCompatActivity {
     protected void onPause() {
         panoWidgetView.pauseRendering();
         super.onPause();
+        if (mediaPlayer!=null) mediaPlayer.stop();
     }
 
     @Override
