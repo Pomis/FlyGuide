@@ -8,6 +8,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -90,7 +92,22 @@ public class PanoramaActivity extends AppCompatActivity {
         int wavAsset = intent.getIntExtra("wav_asset", 0);
         if (wavAsset!=0) {
             mediaPlayer = MediaPlayer.create(this, wavAsset);
-            mediaPlayer.start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(7000);
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mediaPlayer.start();
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         }
 
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
@@ -119,6 +136,12 @@ public class PanoramaActivity extends AppCompatActivity {
         }
         backgroundImageLoaderTask = new ImageLoaderTask();
         backgroundImageLoaderTask.execute(Pair.create(fileUri, panoOptions));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//        finish();
     }
 
     @Override

@@ -285,7 +285,8 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
                     (num <= 2)?
                             new Intent(getContext(), NatureActivity.class)
                                 .setData(Uri.parse("natura.jpg")):
-                            new Intent(getContext(), SightActivity.class);
+                            new Intent(getContext(), SightActivity.class)
+                                .setData(Uri.parse("city.jpg"));
 
             //.putExtra("fullscreen", true);
             intent.setAction(Intent.ACTION_VIEW);

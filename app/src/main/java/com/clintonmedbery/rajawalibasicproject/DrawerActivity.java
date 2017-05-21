@@ -187,8 +187,8 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
     }
 
 
-    int kmFrom = 2875;
-    int kmTo = 565;
+    int kmFrom = 2445;
+    int kmTo = 999;
     void updateAgo() {
         new Thread(new Runnable() {
             @Override

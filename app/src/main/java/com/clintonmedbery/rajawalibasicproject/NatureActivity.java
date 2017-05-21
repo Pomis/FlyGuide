@@ -41,7 +41,7 @@ public class NatureActivity extends AppCompatActivity implements DiscreteScrollV
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decor = getWindow().getDecorView();
-            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         }
         initArray();
@@ -70,9 +70,9 @@ public class NatureActivity extends AppCompatActivity implements DiscreteScrollV
 
     private void initArray() {
         sights = new ArrayList<>();
-        sights.add(new Sight("Долина Жу", "kekker", "park_dolina.jpg", R.raw.dolina,R.drawable.preview_dolina));
-        sights.add(new Sight("Виноградники Лаво", "dsfasdf", "park_wine.jpg", R.raw.wine , R.drawable.preview_wine));
-        sights.add(new Sight("Кре де ла Неж", "dsfsdfsd", "park_mountain.jpg", 0, R.drawable.preview_mountain));
+        sights.add(new Sight("Долина Жу", "Межгорный прогиб (Vallee de Joux)", "park_dolina.jpg", R.raw.dolina,R.drawable.preview_dolina));
+        sights.add(new Sight("Виноградники Лаво", "Виноградник (XI - XII век)", "park_wine.jpg", R.raw.wine , R.drawable.preview_wine));
+        sights.add(new Sight("Кре де ла Неж", "Пик горного хребта Юра (1720 м)", "park_mountain.jpg", 0, R.drawable.preview_mountain));
     }
 
     private void initDiscreteScroll() {

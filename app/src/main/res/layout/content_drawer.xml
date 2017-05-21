@@ -67,7 +67,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="2875km\n04:03 AGO"
+                android:text="2445km\n04:03 AGO"
                 android:textColor="@color/textColor"
                 android:textSize="11dp" />
 
@@ -83,7 +83,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
-                android:text="565km\n00:51 AGO"
+                android:text="999km\n00:51 AGO"
                 android:textColor="@color/textColor"
                 android:textSize="11dp" />
 

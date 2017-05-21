@@ -28,7 +28,7 @@
         android:layout_alignParentTop="true"
         android:background="#66000000"
         android:paddingLeft="16dp"
-        android:text="Nature regional park"
+        android:text="Национальный парк Юры"
         android:textColor="#fff"
 
         android:textSize="32dp" />
@@ -41,7 +41,7 @@
         android:layout_below="@+id/tv_cityname"
         android:background="#66000000"
         android:paddingLeft="16dp"
-        android:text="France"
+        android:text="Швейцария"
         android:textColor="#fff"
         android:textSize="20dp" />
 
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/pano_view"
         android:padding="16dp"
-        android:text="The park was created February 10, 1986, and at that time comprised 37 towns. As of 2005, that count is now 113 towns, with a total population of 71,000 inhabitants. The park covers an area of 165,000 hectares across three French departments: Ain, Doubs and Jura. Entry towns (ville-portes) situated at the park boundaries are not actually part of the park themselves."
+        android:text="От Ле-Сантье до самого Ньона на берегу Женевского озера тянутся зеленые склоны национального парка Юры - второго в стране по размерам и богатству флоры. Несмотря на заселенность этих мест, здесь удалось сохранить множество природных комплексов, характерных для невысоких Юрских гор и знаменитой долины Жу, считающейся одной из самых красивых в Швейцарии."
         android:textColor="#000"
         android:textSize="17dp" />
 
@@ -59,7 +59,7 @@
     <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
         android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
         sothree:umanoPanelHeight="68dp"
@@ -86,7 +86,7 @@
                 android:layout_margin="16dp"
 
                 android:gravity="left"
-                android:text="Flora and fauna"
+                android:text="Интересные места"
                 android:textColor="#000"
                 android:textSize="20sp" />
 

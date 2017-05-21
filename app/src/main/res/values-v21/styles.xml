@@ -7,4 +7,12 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/fogColor</item>
     </style>
+
+    <style name="AppTheme.NoActionBarDark">
+        <item name="android:textColorSecondary">#A3A5A8</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/navBackgroundColor</item>
+    </style>
 </resources>

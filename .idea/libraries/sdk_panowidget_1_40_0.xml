@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="sdk-panowidget-1.40.0">
     <CLASSES>
-      <root url="file://$USER_HOME$/.android/build-cache/297764a2ca13c62ac267b04cec749b95ad42de76/output/res" />
-      <root url="jar://$USER_HOME$/.android/build-cache/297764a2ca13c62ac267b04cec749b95ad42de76/output/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.android/build-cache/ec05c4bdf625e238e7ec22e7837c0e0007e4fe88/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/ec05c4bdf625e238e7ec22e7837c0e0007e4fe88/output/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

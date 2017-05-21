@@ -42,6 +42,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
                         .getDrawable(data.get(position).image)
         );
         holder.text.setText(data.get(position).name);
+        holder.descr.setText(data.get(position).descr);
 
     }
 
@@ -54,11 +55,13 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
         private ImageView image;
         private TextView text;
+        private TextView descr;
 
         public ViewHolder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.image);
             text = (TextView) itemView.findViewById(R.id.tv_sightname);
+            descr = (TextView) itemView.findViewById(R.id.tv_row_descr);
         }
     }
 }
