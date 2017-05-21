@@ -70,9 +70,9 @@ public class NatureActivity extends AppCompatActivity implements DiscreteScrollV
 
     private void initArray() {
         sights = new ArrayList<>();
-        sights.add(new Sight("Долина Жу", "kekker", "park_dolina.jpg", R.drawable.olenb));
-        sights.add(new Sight("Виноградники Лаво", "dsfasdf", "park_wine.jpg", R.drawable.common));
-        sights.add(new Sight("Кре де ла Неж", "dsfsdfsd", "park_mountain.jpg", R.drawable.spear));
+        sights.add(new Sight("Долина Жу", "kekker", "park_dolina.jpg", R.raw.dolina,R.drawable.preview_dolina));
+        sights.add(new Sight("Виноградники Лаво", "dsfasdf", "park_wine.jpg", R.raw.wine , R.drawable.preview_wine));
+        sights.add(new Sight("Кре де ла Неж", "dsfsdfsd", "park_mountain.jpg", 0, R.drawable.preview_mountain));
     }
 
     private void initDiscreteScroll() {
@@ -98,6 +98,7 @@ public class NatureActivity extends AppCompatActivity implements DiscreteScrollV
         if (sight != null) {
             Intent intent = new Intent(getApplicationContext(), PanoramaActivity.class)
                     .putExtra("fullscreen", true)
+                    .putExtra("wav_asset", sight.wavAsset)
                     .setData(Uri.parse(sight.asset))
                     .setAction(Intent.ACTION_VIEW)
                     .putExtra("inputType", VrPanoramaView.Options.TYPE_STEREO_OVER_UNDER);
