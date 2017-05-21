@@ -1,7 +1,7 @@
 # FlyGuide
 app for s7 haackathon
 
-https://www.youtube.com/watch?v=MKXKBmxKB-w&t=26s
+https://www.youtube.com/watch?v=rHhR4SZrC0M
 
 http://207.154.231.182
 
