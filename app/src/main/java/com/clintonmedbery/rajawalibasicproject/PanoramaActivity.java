@@ -140,14 +140,11 @@ public class PanoramaActivity extends AppCompatActivity {
 
 
     private class ImageLoaderTask extends AsyncTask<Pair<Uri, Options>, Void, Boolean> {
+        Options panoOptions;
+        InputStream istr;
 
-        /**
-         * Reads the bitmap from disk in the background and waits until it's loaded by pano widget.
-         */
         @Override
         protected Boolean doInBackground(Pair<Uri, Options>... fileInformation) {
-            Options panoOptions;
-            InputStream istr;
 
             if (fileInformation == null || fileInformation.length < 1
                     || fileInformation[0] == null || fileInformation[0].first == null) {
@@ -181,6 +178,14 @@ public class PanoramaActivity extends AppCompatActivity {
 
             return true;
         }
+
+//        @Override
+//        protected void onPostExecute(Boolean aBoolean) {
+//            if (istr != null && panoOptions != null) {
+//                panoWidgetView.loadImageFromBitmap(BitmapFactory.decodeStream(istr), panoOptions);
+//            }
+//            super.onPostExecute(aBoolean);
+//        }
     }
 
     /**
