@@ -51,7 +51,7 @@
             android:name=".PanoramaActivity"
             android:label="@string/title_activity_panorama"
             android:parentActivityName=".DrawerActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBarDark">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.clintonmedbery.rajawalibasicproject.DrawerActivity" />

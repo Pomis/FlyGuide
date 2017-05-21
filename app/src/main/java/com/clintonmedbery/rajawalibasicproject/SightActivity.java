@@ -67,7 +67,13 @@ public class SightActivity extends AppCompatActivity implements DiscreteScrollVi
         findViewById(R.id.b_vr).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openPano(v);
+                openPano(true);
+            }
+        });
+        findViewById(R.id.b_360).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openPano(false);
             }
         });
     }
@@ -97,10 +103,10 @@ public class SightActivity extends AppCompatActivity implements DiscreteScrollVi
         this.sight = sight;
     }
 
-    public void openPano(View v) {
+    public void openPano(boolean VR) {
         if (sight != null) {
             Intent intent = new Intent(getApplicationContext(), PanoramaActivity.class)
-                    .putExtra("fullscreen", true)
+                    .putExtra("fullscreen", VR)
                     .putExtra("wav_asset", sight.wavAsset)
                     .setData(Uri.parse(sight.asset))
                     .setAction(Intent.ACTION_VIEW)

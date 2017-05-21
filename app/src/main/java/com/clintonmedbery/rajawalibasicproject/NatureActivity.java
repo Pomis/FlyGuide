@@ -63,15 +63,21 @@ public class NatureActivity extends AppCompatActivity implements DiscreteScrollV
         findViewById(R.id.b_vr).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openPano(v);
+                openPano(true);
+            }
+        });
+        findViewById(R.id.b_360).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openPano(false);
             }
         });
     }
 
     private void initArray() {
         sights = new ArrayList<>();
-        sights.add(new Sight("Долина Жу", "Межгорный прогиб (Vallee de Joux)", "park_dolina.jpg", R.raw.dolina,R.drawable.preview_dolina));
-        sights.add(new Sight("Виноградники Лаво", "Виноградник (XI - XII век)", "park_wine.jpg", R.raw.wine , R.drawable.preview_wine));
+        sights.add(new Sight("Долина Жу", "Межгорный прогиб (Vallee de Joux)", "park_dolina.jpg", R.raw.dolina, R.drawable.preview_dolina));
+        sights.add(new Sight("Виноградники Лаво", "Виноградник (XI - XII век)", "park_wine.jpg", R.raw.wine, R.drawable.preview_wine));
         sights.add(new Sight("Кре де ла Неж", "Пик горного хребта Юра (1720 м)", "park_mountain.jpg", 0, R.drawable.preview_mountain));
     }
 
@@ -94,10 +100,10 @@ public class NatureActivity extends AppCompatActivity implements DiscreteScrollV
         this.sight = sight;
     }
 
-    public void openPano(View v) {
+    public void openPano(boolean VR) {
         if (sight != null) {
             Intent intent = new Intent(getApplicationContext(), PanoramaActivity.class)
-                    .putExtra("fullscreen", true)
+                    .putExtra("fullscreen", VR)
                     .putExtra("wav_asset", sight.wavAsset)
                     .setData(Uri.parse(sight.asset))
                     .setAction(Intent.ACTION_VIEW)

@@ -32,6 +32,16 @@ import java.io.InputStream;
 
 public class PanoramaActivity extends AppCompatActivity {
 
+    Toolbar toolbar;
+    private static final String TAG = PanoramaActivity.class.getSimpleName();
+    private VrPanoramaView panoWidgetView;
+    public boolean loadImageSuccessful;
+    private Uri fileUri;
+    Thread playerThread;
+    private Options panoOptions = new Options();
+    private ImageLoaderTask backgroundImageLoaderTask;
+    MediaPlayer mediaPlayer;
+
     /**
      * Called when the app is launched via the app icon or an intent using the adb command above. This
      * initializes the app and loads the image to render.
@@ -40,17 +50,9 @@ public class PanoramaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_panorama);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -58,16 +60,14 @@ public class PanoramaActivity extends AppCompatActivity {
         panoWidgetView.setEventListener(new ActivityEventListener());
 
         handleIntent(getIntent());
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PanoramaActivity.super.onBackPressed();
+            }
+        });
     }
-
-
-    private static final String TAG = PanoramaActivity.class.getSimpleName();
-    private VrPanoramaView panoWidgetView;
-    public boolean loadImageSuccessful;
-    private Uri fileUri;
-    private Options panoOptions = new Options();
-    private ImageLoaderTask backgroundImageLoaderTask;
-    MediaPlayer mediaPlayer;
 
 
     @Override
@@ -92,7 +92,7 @@ public class PanoramaActivity extends AppCompatActivity {
         int wavAsset = intent.getIntExtra("wav_asset", 0);
         if (wavAsset!=0) {
             mediaPlayer = MediaPlayer.create(this, wavAsset);
-            new Thread(new Runnable() {
+            playerThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -107,7 +107,8 @@ public class PanoramaActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-            }).start();
+            });
+            playerThread.start();
         }
 
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
@@ -149,7 +150,10 @@ public class PanoramaActivity extends AppCompatActivity {
         panoWidgetView.pauseRendering();
         super.onPause();
         if (mediaPlayer!=null) mediaPlayer.stop();
+        if (playerThread!=null) playerThread.interrupt();
     }
+
+
 
     @Override
     protected void onResume() {
