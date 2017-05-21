@@ -111,7 +111,18 @@ public class PanoramaActivity extends AppCompatActivity {
             playerThread.start();
         }
 
-        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+        if (getIntent().getBooleanExtra("implicit", false)) {
+            fileUri = Uri.parse("city.jpg");
+            if (fileUri == null) {
+                Log.w(TAG, "No data uri specified. Use \"-d /path/filename\".");
+            } else {
+                Log.i(TAG, "Using file " + fileUri.toString());
+            }
+
+            panoOptions.inputType = intent.getIntExtra("inputType", Options.TYPE_MONO);
+            Log.i(TAG, "Options.inputType = " + panoOptions.inputType);
+        }
+        else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             Log.i(TAG, "ACTION_VIEW Intent received");
 
             fileUri = intent.getData();

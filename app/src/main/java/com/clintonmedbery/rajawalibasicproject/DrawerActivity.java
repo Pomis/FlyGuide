@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 
 import org.rajawali3d.surface.IRajawaliSurface;
 import org.rajawali3d.surface.RajawaliSurfaceView;
@@ -75,7 +77,7 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decor = getWindow().getDecorView();
-                decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         }
 
@@ -101,7 +103,24 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
 //                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
 //                        .findFragmentById(R.id.map);
 //                mapFragment.getMapAsync(DrawerActivity.this);
-                startActivity(new Intent(getApplicationContext(), FlightVRActivity.class));
+                startActivity(new Intent().setAction("com.rajawali3d.examples.examples.vr_ar.VR_MAP"));
+            }
+        });
+        FloatingActionButton myFab2 = (FloatingActionButton) findViewById(R.id.floating_button_map);
+        myFab2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (findViewById(R.id.map).getVisibility() == View.GONE) {
+                    ((FloatingActionButton) findViewById(R.id.floating_button_map)).setImageResource(R.drawable.ic_3d_rotation_white_48dp);
+                    findViewById(R.id.map).setVisibility(View.VISIBLE);
+                } else {
+                    ((FloatingActionButton) findViewById(R.id.floating_button_map)).setImageResource(R.drawable.ic_map_white_48dp);
+                    findViewById(R.id.map).setVisibility(View.GONE);
+                }
+
+                // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
+                mapFragment.getMapAsync(DrawerActivity.this);
             }
         });
     }
@@ -189,6 +208,7 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
 
     int kmFrom = 2445;
     int kmTo = 999;
+
     void updateAgo() {
         new Thread(new Runnable() {
             @Override
@@ -200,8 +220,8 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
                         public void run() {
                             kmFrom++;
                             kmTo--;
-                            ((TextView)findViewById(R.id.tv_from)).setText(kmFrom+"km\n04:03 AGO");
-                            ((TextView)findViewById(R.id.tv_to)).setText(kmTo+"km\n00:51 AGO");
+                            ((TextView) findViewById(R.id.tv_from)).setText(kmFrom + "km\n04:03 AGO");
+                            ((TextView) findViewById(R.id.tv_to)).setText(kmTo + "km\n00:51 AGO");
                             updateAgo();
                         }
                     });
@@ -216,8 +236,7 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
     public boolean onTouch(View v, MotionEvent event) {
         scrollDetector.onTouchEvent(event);
 
-        if(event.getAction() == MotionEvent.ACTION_DOWN)
-        {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             renderer.getObjectAt(event.getX(), event.getY());
             renderer.onTouchEvent(event);
         }
@@ -249,7 +268,7 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
         bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.water)).getBitmap();
         Bitmap waterMarker = Bitmap.createScaledBitmap(bitmap, 98, 143, false);
 
-        MarkerOptions[] markers = new MarkerOptions[] {
+        MarkerOptions[] markers = new MarkerOptions[]{
                 new MarkerOptions().position(latLng1).title("nature").icon(BitmapDescriptorFactory.fromBitmap(natureMarker)),
                 new MarkerOptions().position(latLng2).title("nature").icon(BitmapDescriptorFactory.fromBitmap(natureMarker)),
                 //new MarkerOptions().position(latLng3).title("water").icon(BitmapDescriptorFactory.fromBitmap(waterMarker)),
@@ -342,8 +361,7 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
         });
     }
 
-    public static Bitmap rotateBitmap(Bitmap source, float angle)
-    {
+    public static Bitmap rotateBitmap(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
@@ -352,9 +370,10 @@ public class DrawerActivity extends AppCompatActivity implements GoogleMap.OnMar
     @Override
     public boolean onMarkerClick(Marker marker) {
         if (marker.getTitle().equals("nature")) {
-            startActivity(new Intent(getApplication(), NatureActivity.class));
+            startActivity(new Intent(getApplication(), NatureActivity.class).setAction(Intent.ACTION_VIEW).putExtra("inputType", VrPanoramaView.Options.TYPE_STEREO_OVER_UNDER).setData(Uri.parse("natura.jpg")))
+            ;
         } else {
-            startActivity(new Intent(getApplication(), SightActivity.class));
+            startActivity(new Intent(getApplication(), SightActivity.class).setAction(Intent.ACTION_VIEW).putExtra("inputType", VrPanoramaView.Options.TYPE_STEREO_OVER_UNDER).setData(Uri.parse("city.jpg")));
         }
 
         return false;

@@ -55,6 +55,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.clintonmedbery.rajawalibasicproject.DrawerActivity" />
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.rajawali3d.examples.examples.vr_ar.VR_OPEN" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".FlightVRActivity"
